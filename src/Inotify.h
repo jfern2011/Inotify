@@ -11,8 +11,8 @@
 
 #include <string>
 
-#include "SharedFd.h"
-#include "Signal.h"
+#include "SharedFd/SharedFd.h"
+#include "signal/Signal.h"
 
 /**
  * @class Inotify

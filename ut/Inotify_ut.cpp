@@ -2,8 +2,8 @@
 #include <map>
 #include <sys/inotify.h>
 
-#include "abort.h"
-#include "Inotify.h"
+#include "abort/abort.h"
+#include "src/Inotify.h"
 
 bool quit = false;
 
@@ -55,9 +55,16 @@ bool handle_input(const Inotify::Event& event)
 
 int main(int argc, char** argv)
 {
+	if (argc < 2)
+	{
+		std::printf("usage: %s <path to test file>\n", argv[0]);
+		std::fflush(stdout);
+		return 0;
+	}
+
 	Inotify inotify;
 	AbortIfNot(inotify.init(0), -1);
-	int wd = inotify.add_watch("testfile", IN_MODIFY | IN_ATTRIB);
+	int wd = inotify.add_watch( argv[1], IN_MODIFY | IN_ATTRIB);
 
 	AbortIfNot(inotify.data_sig.attach(&handle_input),
 		-1);

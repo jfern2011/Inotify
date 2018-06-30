@@ -12,7 +12,7 @@
 
 #include <unistd.h>
 
-#include "abort.h"
+#include "abort/abort.h"
 #include "Fd.h"
 
 #ifndef DOXYGEN_SKIP
