@@ -12,7 +12,7 @@
 #include <string>
 
 #include "SharedFd.h"
-#include "signal/Signal.h"
+#include "Signal.h"
 
 /**
  * @class Inotify
@@ -36,13 +36,13 @@ public:
 	 */
 	struct Event
 	{
-		/** The watch descriptor  */
+		/** Watch descriptor */
 		int         wd;
 
-		/** The mask of events    */
+		/** The bit mask of returned events */
 		uint32_t    mask;
 
-		/** Cookie to sync events */
+		/** Cookie for synchronizing events */
 		uint32_t    cookie;
 
 		/** Optional name */
@@ -69,13 +69,9 @@ public:
 
 private:
 
-	bool _emit_data(int bytes);
-
-	bool _handle_except( const SharedFd& fd );
-
-	bool _handle_input ( const SharedFd& fd );
-
 	bool _resize(size_t new_size);
+
+	bool _emit_data(int bytes);
 
 	/**
 	 *  The inotify file descriptor
@@ -90,7 +86,7 @@ private:
 	/**
 	 * Size of _raw, in bytes
 	 */
-	size_t raw_len;
+	size_t _raw_len;
 };
 
 #endif

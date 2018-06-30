@@ -7,6 +7,7 @@
  */
 
 #include <sys/ioctl.h>
+#include <sys/inotify.h>
 #include <unistd.h>
 
 #include "Inotify.h"
@@ -14,7 +15,8 @@
 /**
  * Constructor
  */
-Inotify::Inotify() : _fd(), _raw(nullptr), _raw_len(0)
+Inotify::Inotify()
+	: _fd(), _raw(nullptr), _raw_len(0)
 {
 }
 
@@ -49,7 +51,7 @@ int Inotify::add_watch(const std::string& path, uint32_t mask)
 bool Inotify::init(int flags)
 {
 	_fd.reset( ::inotify_init1(flags) );
-	return _fd;
+	return (bool)_fd;
 }
 
 /**
@@ -89,7 +91,8 @@ bool Inotify::poll(int timeout)
  */
 bool Inotify::rm_watch(int wd)
 {
-	return ::inotify_rm_watch(_fd.get(), wd) == 0;
+	return ::inotify_rm_watch(_fd.get(), wd)
+				== 0;
 }
 
 /**
@@ -116,8 +119,7 @@ bool Inotify::_emit_data(int bytes)
 
 		for (char* ptr = _raw; ptr < _raw + bytes;)
 		{
-			struct inotify_event* evt_ptr =
-				static_cast<inotify_event*>(evt_ptr);
+			auto evt_ptr= (struct inotify_event*)ptr;
 
 			event.cookie = evt_ptr->cookie;
 			event.mask   = evt_ptr->mask;
@@ -125,7 +127,7 @@ bool Inotify::_emit_data(int bytes)
 									   evt_ptr->len);
 			event.wd     = evt_ptr->wd;
 
-			if ( !data_sig->raise(event) )
+			if ( !data_sig.raise(event) )
 				return false;
 
 			ptr += sizeof(struct inotify_event)
