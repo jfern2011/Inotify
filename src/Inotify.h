@@ -55,6 +55,8 @@ public:
 
 	int add_watch(const std::string& path, uint32_t mask);
 
+    SharedFd get_fd() const;
+
 	bool init(int flags = 0);
 
 	bool poll(int timeout = 0);

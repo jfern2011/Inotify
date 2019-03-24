@@ -55,6 +55,17 @@ bool Inotify::init(int flags)
 }
 
 /**
+ * Get the Inotify file descriptor (e.g. to
+ * add to a fd_set)
+ *
+ * @return The file descriptor
+ */
+SharedFd Inotify::get_fd() const
+{
+    return _fd;
+}
+
+/**
  *  Poll for events, forwarding them to consumers in the form of
  *  \ref Event structs
  *
